@@ -2,19 +2,21 @@ package com.university.handler.command;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.university.handler.command.Command.Request.*;
+import static java.lang.String.format;
 
 public class CommandResolver {
 
-    private static final String HEAD_OF_TEMPLATE = "Who is head of department %s";
-    private static final String STATISTICS_TEMPLATE = "Show %s statistics";
-    private static final String AVERAGE_SALARY_TEMPLATE = "Show the average salary for the department %s";
-    private static final String EMPLOYEE_COUNT_TEMPLATE = "Show count of employee for %s";
-    private static final String GLOBAL_SEARCH_TEMPLATE = "Global search by %s";
+    private static final String PARAM_PLACE = "(.*?)";
+
+    private static final String HEAD_OF_TEMPLATE = format("Who is head of department %s", PARAM_PLACE);
+    private static final String STATISTICS_TEMPLATE = format("Show %s statistics", PARAM_PLACE);
+    private static final String AVERAGE_SALARY_TEMPLATE =
+            format("Show the average salary for the department %s", PARAM_PLACE);
+    private static final String EMPLOYEE_COUNT_TEMPLATE = format("Show count of employee for %s", PARAM_PLACE);
+    private static final String GLOBAL_SEARCH_TEMPLATE = format("Global search by %s", PARAM_PLACE);
 
     public Command resolve(String input) {
 
@@ -33,34 +35,37 @@ public class CommandResolver {
     }
 
     private boolean isMatch(String string, String template) {
-        return Pattern.compile(String.format(template, "(.*?)"), Pattern.CASE_INSENSITIVE).matcher(string).find();
+        return Pattern.compile(template, Pattern.CASE_INSENSITIVE).matcher(string).find();
     }
 
     private String getFirstParameter(String input, String template) {
-        return retrieveParameters(input, template).get(0);
+        return retrieveParameters(input, template)[0];
     }
 
-    private List<String> retrieveParameters(String input, String template) {
+    private String[] retrieveParameters(String input, String template) {
 
         input = input.toLowerCase();
-        String[] constantParts = template.toLowerCase().split("%s");
 
-        List<String> params = new ArrayList<>();
+        String[] constantParts = template.toLowerCase().split(Pattern.quote(PARAM_PLACE));
+        String[] params = new String[StringUtils.countMatches(template, PARAM_PLACE)];
+
         for (int i = 0; i < constantParts.length; i++) {
             String param = (i < constantParts.length - 1)
                     ? StringUtils.substringBetween(input, constantParts[i], constantParts[i+1])
                     : StringUtils.substringAfter(input, constantParts[i]);
-            input = input.replaceFirst(constantParts[i], "");
 
-            if(hasLetters(param)) params.add(StringUtils.capitalize(param));
+            validateParam(param);
+            params[i] = StringUtils.capitalize(param.strip());
+            if (i == params.length - 1) break;
+
+            input = input.replaceFirst(constantParts[i], "").replaceFirst(param, "");
         }
-
-        if (params.isEmpty()) throw new RuntimeException("Invalid parameter passed");
 
         return params;
     }
 
-    private boolean hasLetters(String string) {
-        return string.matches(".*[a-zA-Z].*");
+    private void validateParam(String param) {
+        if (!param.matches("[\\w _\\-]+"))
+            throw new RuntimeException(format("Invalid parameter \"%s\" passed", param));
     }
 }

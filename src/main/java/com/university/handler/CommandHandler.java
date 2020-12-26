@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static com.university.model.enums.Degree.*;
+import static java.lang.String.format;
 
 @Component
 public class CommandHandler implements CommandLineRunner {
@@ -46,7 +47,7 @@ public class CommandHandler implements CommandLineRunner {
                 switch (command.getRequest()) {
                     case HEAD_OF: {
                         String headOfDepartment = departmentService.getHeadOfDepartment(param);
-                        print(String.format("Head of %s department is %s", param, headOfDepartment));
+                        print(format("Head of %s department is %s", param, headOfDepartment));
                         break;
                     } case STATISTIC: {
                         List<DepartmentLector> lectors = departmentService.getDepartmentLectors(param);
@@ -54,13 +55,12 @@ public class CommandHandler implements CommandLineRunner {
                         long associateProfessorsCount = countDepartmentLectors(lectors, ASSOCIATE_PROFESSOR);
                         long professorsCount = countDepartmentLectors(lectors, PROFESSOR);
 
-                        print(String.format("assistans - %s; \nassociate professors - %s;\nprofessors - %s",
+                        print(format("assistans - %s; \nassociate professors - %s;\nprofessors - %s",
                                 assistantsCount, associateProfessorsCount, professorsCount));
                         break;
                     } case AVERAGE_SALARY: {
                         double salary = calculateAverageSalary(departmentService.getDepartmentLectors(param));
-                        print(String.format("The average salary of %s department is %s",
-                                command.getParameter(), salary));
+                        print(format("The average salary of %s department is %s", param, salary));
                         break;
                     } case EMPLOYEE_COUNT: {
                         print(departmentService.getDepartmentLectors(param).size() + "");
