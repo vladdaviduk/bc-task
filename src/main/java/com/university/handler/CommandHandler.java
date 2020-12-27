@@ -1,5 +1,6 @@
 package com.university.handler;
 
+import com.university.exceptions.ServiceRuntimeException;
 import com.university.handler.command.CommandResolver;
 import com.university.handler.command.Command;
 import com.university.model.DepartmentLector;
@@ -71,7 +72,7 @@ public class CommandHandler implements CommandLineRunner {
                         else print(result.toString());
                     }
                 }
-            } catch (RuntimeException e) {
+            } catch (ServiceRuntimeException e) {
                 print(e.getMessage());
             }
         }

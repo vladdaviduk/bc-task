@@ -1,5 +1,6 @@
 package com.university.handler.command;
 
+import com.university.exceptions.ServiceRuntimeException;
 import org.junit.Test;
 
 import static com.university.handler.command.Command.Request.*;
@@ -46,7 +47,7 @@ public class CommandResolverTest {
         assertEquals(searchCommand.getRequest(), GLOBAL_SEARCH);
 
 
-        assertThrows(RuntimeException.class, () -> resolver.resolve(INVALID_REQUEST));
-        assertThrows(RuntimeException.class, () -> resolver.resolve(INVALID_PARAMETER));
+        assertThrows(ServiceRuntimeException.class, () -> resolver.resolve(INVALID_REQUEST));
+        assertThrows(ServiceRuntimeException.class, () -> resolver.resolve(INVALID_PARAMETER));
     }
 }

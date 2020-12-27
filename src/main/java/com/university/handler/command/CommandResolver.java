@@ -1,5 +1,6 @@
 package com.university.handler.command;
 
+import com.university.exceptions.ServiceRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class CommandResolver {
         else if (isMatch(input, GLOBAL_SEARCH_TEMPLATE))
             return new Command(GLOBAL_SEARCH, retrieveParameters(input, GLOBAL_SEARCH_TEMPLATE));
 
-        throw new RuntimeException("Command is invalid");
+        throw new ServiceRuntimeException("Command is invalid");
     }
 
     private boolean isMatch(String string, String template) {
@@ -64,6 +65,6 @@ public class CommandResolver {
 
     private void validateParam(String param) {
         if (!param.matches("[\\w _\\-]+"))
-            throw new RuntimeException(format("Invalid parameter \"%s\" passed", param));
+            throw new ServiceRuntimeException(format("Invalid parameter \"%s\" passed", param));
     }
 }
