@@ -48,14 +48,13 @@ public class CommandResolver {
         String[] constantParts = template.toLowerCase().split(Pattern.quote(PARAM_PLACE));
         List<String> params = new ArrayList<>();
 
-        for (int i = 0; i < constantParts.length; i++) {
+        for (int i = 0; i < paramsNumber; i++) {
             String param = (i < constantParts.length - 1)
                     ? StringUtils.substringBetween(input, constantParts[i], constantParts[i+1])
                     : StringUtils.substringAfter(input, constantParts[i]);
 
             validateParam(param);
             params.add(StringUtils.capitalize(param.strip()));
-            if (i == paramsNumber - 1) break;
 
             input = input.replaceFirst(constantParts[i], "").replaceFirst(param, "");
         }
