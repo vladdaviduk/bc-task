@@ -42,15 +42,15 @@ public class CommandHandler implements CommandLineRunner {
 
             try {
                 Command command = commandResolver.resolve(userInput);
-                String param = command.getParameter();
+                String firstParam = command.getParameters().get(0);
 
                 switch (command.getRequest()) {
                     case HEAD_OF: {
-                        String headOfDepartment = departmentService.getHeadOfDepartment(param);
-                        print(format("Head of %s department is %s", param, headOfDepartment));
+                        String headOfDepartment = departmentService.getHeadOfDepartment(firstParam);
+                        print(format("Head of %s department is %s", firstParam, headOfDepartment));
                         break;
                     } case STATISTIC: {
-                        List<DepartmentLector> lectors = departmentService.getDepartmentLectors(param);
+                        List<DepartmentLector> lectors = departmentService.getDepartmentLectors(firstParam);
                         long assistantsCount = countDepartmentLectors(lectors, ASSISTANT);
                         long associateProfessorsCount = countDepartmentLectors(lectors, ASSOCIATE_PROFESSOR);
                         long professorsCount = countDepartmentLectors(lectors, PROFESSOR);
@@ -59,14 +59,14 @@ public class CommandHandler implements CommandLineRunner {
                                 assistantsCount, associateProfessorsCount, professorsCount));
                         break;
                     } case AVERAGE_SALARY: {
-                        double salary = calculateAverageSalary(departmentService.getDepartmentLectors(param));
-                        print(format("The average salary of %s department is %s", param, salary));
+                        double salary = calculateAverageSalary(departmentService.getDepartmentLectors(firstParam));
+                        print(format("The average salary of %s department is %s", firstParam, salary));
                         break;
                     } case EMPLOYEE_COUNT: {
-                        print(departmentService.getDepartmentLectors(param).size() + "");
+                        print(departmentService.getDepartmentLectors(firstParam).size() + "");
                         break;
                     } case GLOBAL_SEARCH: {
-                        List<String> result = searchService.search(param);
+                        List<String> result = searchService.search(firstParam);
                         if (result.isEmpty()) print("Nothing found");
                         else print(result.toString());
                     }

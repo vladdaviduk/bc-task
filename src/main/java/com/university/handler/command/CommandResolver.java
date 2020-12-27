@@ -2,6 +2,8 @@ package com.university.handler.command;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.university.handler.command.Command.Request.*;
@@ -21,15 +23,15 @@ public class CommandResolver {
     public Command resolve(String input) {
 
         if (isMatch(input, HEAD_OF_TEMPLATE))
-            return new Command(HEAD_OF, getFirstParameter(input, HEAD_OF_TEMPLATE));
+            return new Command(HEAD_OF, retrieveParameters(input, HEAD_OF_TEMPLATE));
         else if (isMatch(input, STATISTICS_TEMPLATE))
-            return new Command(STATISTIC, getFirstParameter(input, STATISTICS_TEMPLATE));
+            return new Command(STATISTIC, retrieveParameters(input, STATISTICS_TEMPLATE));
         else if (isMatch(input, AVERAGE_SALARY_TEMPLATE))
-            return new Command(AVERAGE_SALARY, getFirstParameter(input, AVERAGE_SALARY_TEMPLATE));
+            return new Command(AVERAGE_SALARY, retrieveParameters(input, AVERAGE_SALARY_TEMPLATE));
         else if (isMatch(input, EMPLOYEE_COUNT_TEMPLATE))
-            return new Command(EMPLOYEE_COUNT, getFirstParameter(input, EMPLOYEE_COUNT_TEMPLATE));
+            return new Command(EMPLOYEE_COUNT, retrieveParameters(input, EMPLOYEE_COUNT_TEMPLATE));
         else if (isMatch(input, GLOBAL_SEARCH_TEMPLATE))
-            return new Command(GLOBAL_SEARCH, getFirstParameter(input, GLOBAL_SEARCH_TEMPLATE));
+            return new Command(GLOBAL_SEARCH, retrieveParameters(input, GLOBAL_SEARCH_TEMPLATE));
 
         throw new RuntimeException("Command is invalid");
     }
@@ -38,16 +40,13 @@ public class CommandResolver {
         return Pattern.compile(template, Pattern.CASE_INSENSITIVE).matcher(string).find();
     }
 
-    private String getFirstParameter(String input, String template) {
-        return retrieveParameters(input, template)[0];
-    }
-
-    private String[] retrieveParameters(String input, String template) {
+    private List<String> retrieveParameters(String input, String template) {
 
         input = input.toLowerCase();
 
+        int paramsNumber = StringUtils.countMatches(template, PARAM_PLACE);
         String[] constantParts = template.toLowerCase().split(Pattern.quote(PARAM_PLACE));
-        String[] params = new String[StringUtils.countMatches(template, PARAM_PLACE)];
+        List<String> params = new ArrayList<>();
 
         for (int i = 0; i < constantParts.length; i++) {
             String param = (i < constantParts.length - 1)
@@ -55,8 +54,8 @@ public class CommandResolver {
                     : StringUtils.substringAfter(input, constantParts[i]);
 
             validateParam(param);
-            params[i] = StringUtils.capitalize(param.strip());
-            if (i == params.length - 1) break;
+            params.add(StringUtils.capitalize(param.strip()));
+            if (i == paramsNumber - 1) break;
 
             input = input.replaceFirst(constantParts[i], "").replaceFirst(param, "");
         }

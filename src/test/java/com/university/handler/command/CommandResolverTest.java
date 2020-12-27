@@ -26,23 +26,23 @@ public class CommandResolverTest {
     @Test
     public void testCommandResolver() {
         Command headOfCommand = resolver.resolve(HEAD_OF_REQUEST);
-        assertEquals(headOfCommand.getParameter(), DEPARTMENT_NAME);
+        assertEquals(headOfCommand.getParameters().get(0), DEPARTMENT_NAME);
         assertEquals(headOfCommand.getRequest(), HEAD_OF);
 
         Command statisticsCommand = resolver.resolve(STATISTICS_REQUEST);
-        assertEquals(statisticsCommand.getParameter(), DEPARTMENT_NAME);
+        assertEquals(statisticsCommand.getParameters().get(0), DEPARTMENT_NAME);
         assertEquals(statisticsCommand.getRequest(), STATISTIC);
 
         Command salaryCommand = resolver.resolve(AVERAGE_SALARY_REQUEST);
-        assertEquals(salaryCommand.getParameter(), DEPARTMENT_NAME);
+        assertEquals(salaryCommand.getParameters().get(0), DEPARTMENT_NAME);
         assertEquals(salaryCommand.getRequest(), AVERAGE_SALARY);
 
         Command empCountCommand = resolver.resolve(EMPLOYEE_COUNT_REQUEST);
-        assertEquals(empCountCommand.getParameter(), DEPARTMENT_NAME);
+        assertEquals(empCountCommand.getParameters().get(0), DEPARTMENT_NAME);
         assertEquals(empCountCommand.getRequest(), EMPLOYEE_COUNT);
 
         Command searchCommand = resolver.resolve(GLOBAL_SEARCH_REQUEST);
-        assertEquals(searchCommand.getParameter(), DEPARTMENT_NAME);
+        assertEquals(searchCommand.getParameters().get(0), DEPARTMENT_NAME);
         assertEquals(searchCommand.getRequest(), GLOBAL_SEARCH);
 
 
